@@ -1,0 +1,14 @@
+
+
++---------------------------------------------------------+
+|     OS X Instructions                                   |
++---------------------------------------------------------+
+
+In order for me to get this to work on my OSX, I had to add the following into
+~/.mavenrc
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home
+
+i also installed the maven package via Homebrew:
+
+brew install maven

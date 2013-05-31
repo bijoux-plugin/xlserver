@@ -139,6 +139,8 @@ public class BinaryCodec
 			return;
 		}
 
+		//System.out.println ( "Sending an int: " + (int)xloper.type );
+		//System.out.println ( "Sending an int: " + Integer.toHexString ( (short)xloper.type ) );
 		os.write((int) xloper.type);
 		switch (xloper.type)
 		{

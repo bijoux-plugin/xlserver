@@ -42,6 +42,13 @@ public class XLMap
         map.put(name, new XLBool(value));
     }
 
+	public XLArray getArray ( String name ) {
+		XLoper x = map.get(name);
+		if ( x instanceof XLArray)
+			return (XLArray)x;
+		return null;
+	}
+
     public String getString(String name) {
         XLoper x = map.get(name);
         if (x instanceof XLString)

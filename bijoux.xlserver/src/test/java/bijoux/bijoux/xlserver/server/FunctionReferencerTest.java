@@ -100,7 +100,7 @@ public class FunctionReferencerTest {
 		XLoper res = functionReferencer.getInfoForFunction ( "MyMath.addTwoNumbers" );
 		assertEquals ( XLoper.xlTypeMulti, res.type );
 		XLArray xlArr = (XLArray)res;
-		assertEquals ( 5, xlArr.rows );
+		assertEquals ( 6, xlArr.rows );
 		assertEquals ( 2, xlArr.columns );
 		assertEquals ( XLoper.xlTypeStr, xlArr.array[0].type );
 	}

@@ -169,14 +169,16 @@ public class XLArray extends XLoper
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < rows; i++)
 		{
-			sb.append("[");
+//			sb.append("[");
 			for (int j = 0; j < columns; j++)
 			{
-				if (j > 0)
-					sb.append(",");
+				//if (j > 0)
 				sb.append(array[(i * columns) + j]);
+				if ( (rows-1) == i && (columns-1) == j);
+				else
+					sb.append(",");
 			}
-			sb.append("]\n");
+//			sb.append("]\n");
 		}
 		return sb.toString();
 	}

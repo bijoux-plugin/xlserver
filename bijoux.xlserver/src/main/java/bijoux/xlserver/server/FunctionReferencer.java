@@ -108,8 +108,7 @@ public class FunctionReferencer {
 			}
 			s.add("argumentHelp", c);
 		}
-		if ( xlFunction.isVolatile() )
-			s.add("isVolatile", true);
+		s.add("isVolatile", xlFunction.isVolatile() );
 		return s.toXloper();
 	}
 

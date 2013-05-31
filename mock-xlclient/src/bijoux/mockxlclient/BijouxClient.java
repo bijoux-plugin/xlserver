@@ -29,13 +29,30 @@ public class BijouxClient {
 	private InputStream is;
 
 	public static void main(String[] args) {
-		BijouxClient bijouxClient = new BijouxClient ( "localhost", 6000, "stratou", "stratou-localhost", "1.0.0", "1.0");
-	
+		int port = 6000;
+		BijouxClient bijouxClient = new BijouxClient ( "localhost", port, "stratou", "stratou-localhost", "1.0.0", "1.1" );
+
+		System.out.println ( "Attempting to connect on port: " + port );
 		bijouxClient.connect();
-	
+
+		System.out.println ( "Sleeping for 1 second..." );
+		try {
+			Thread.sleep ( 1000 );
+		} catch ( InterruptedException ie ) {
+		}
 		bijouxClient.getListOfFunctions();
 
-		//callHeartbeat();
+		System.out.println ( "Calling American.priceAmericanOption ( )" );
+		bijouxClient.callPriceAmericanOption();
+
+//		try {
+//			Thread.sleep ( 1000 ) ;
+//			bijouxClient.getListOfFunctions( ) ;
+//		} catch ( InterruptedException ex ) {
+//			System.out.println ( "InterruptedException: " + ex ) ;
+//		}
+
+		System.out.println ( "Disconnecting from server..." );
 		bijouxClient.disconnect();
 	}
 	
@@ -54,19 +71,38 @@ public class BijouxClient {
 			socket = new Socket(targetHost, targetPort);
 			os = socket.getOutputStream();
 			is = socket.getInputStream();
-			
+
 			BinaryCodec.encode(new XLString(userName), os);
 			BinaryCodec.encode(new XLString(localMachineName), os);
 			BinaryCodec.encode(new XLString(versionString), os);
 			BinaryCodec.encode(new XLString(protocolVersion), os);
 			os.flush();
 
-			dumpOutXlOper(BinaryCodec.decode(is)); // Message
-			dumpOutXlOper(BinaryCodec.decode(is)); // Boolean TRUE
+			BinaryCodec.decode(is); // Logon acceptance
+			BinaryCodec.decode(is); // Boolean TRUE
 
 			connected = true;
 		} catch (IOException e) {
 			connected = false;
+			System.out.flush();
+			e.printStackTrace();
+		}
+	}
+
+	public void callPriceAmericanOption() {
+		try {
+			BinaryCodec.encode(new XLString("American.priceAmericanOption"), os);
+			BinaryCodec.encode(new XLInt(1), os);
+			BinaryCodec.encode(new XLInt(100), os);
+			os.flush();
+
+			// Get Response from Function Call
+			XLoper xloper = BinaryCodec.decode(is);
+			//System.out.println ( "Response of function: " + xloper.type );
+			BijouxClient.dumpOutXlOper ( xloper );
+		} catch (IOException e) {
+			connected = false;
+			System.out.flush();
 			e.printStackTrace();
 		}
 	}
@@ -88,12 +124,20 @@ public class BijouxClient {
 			os.flush();
 
 			XLoper xloper = BinaryCodec.decode(is);
+
 			if ( null != xloper ) {
 				XLArray xlArray = ((XLArray)xloper);
 				for ( int i = 0; i < xlArray.rows; i++ ) {
 					XLArray funcInfo = ((XLArray)xlArray.get (i, 0) );
 					XLMap xlMap = new XLMap ( funcInfo );
-					System.out.println ( "Function Name: " + xlMap.getString( "functionName" ) );
+					System.out.println ( "======================================================================" );
+					System.out.println ( "Function Name:\t\t" + xlMap.getString( "functionName" ) );
+					System.out.println ( "\tCategory:\t\t" + xlMap.getString( "category" ) );
+					System.out.println ( "\tFunction Help:\t\t" + xlMap.getString( "functionHelp" ) );
+					System.out.println ( "\tIs Volatile:\t\t" + xlMap.getString("isVolatile") );
+					System.out.println ( "\tArgument Text:\t\t" + xlMap.getString("argumentText") );
+					XLArray argHelp = xlMap.getArray("argumentHelp");
+					System.out.println ( "\tArgument Help:\t\t" + argHelp );
 				}
 			}
 		} catch (IOException e) {

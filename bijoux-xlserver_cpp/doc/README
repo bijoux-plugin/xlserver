@@ -1,0 +1,70 @@
+
+Change made on Fedora Virtual Machine
+
+From within Eclipse
+----
+
+To debug, if you are using cygwin you must set up a path mapping so that the debugger
+can find your source code.  cygwin sees files as /cygdrive/c/..., while windows sees
+the same files as c:\...  So to fix this you must:
+
++------------------------------------------------------------------------------+
+|                    Using Eclipse and the Cygwin tool chain                   |
++------------------------------------------------------------------------------+
+
+[1] To fix source code path lookup for debugging
+	Open Eclipse and click:
+		- Window => Preferences
+		- C/C++ => Debug => Source Lookup Path
+		- Add => Path Mapping
+		- Compilation Path should equal your project path in cygwin terms:
+			\cygdrive\d\Stuff\Git\bijoux.xlserver.cpp
+  		  Local file system path should equal your project path in Windows terms:
+			D:\Stuff\Git\bijoux.xlserver.cpp
+	
+[2] To fix code-completion/preprocessor to resolve symbols
+	Open Eclipse and the bijoux.xlserver.cpp project:
+		- Right click on the project and select "Properties"
+		- Select "Paths and Symbols"
+		- Click the "Includes" tab
+		- Add the following directories for GNU C:
+			(Note: You have to make sure that you are using the correct
+				   version of gcc in your path reference)
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include-fixed
+			C:\Cygwin\usr\include
+			C:\Cygwin\usr\include\w32api
+		- Add the following directories for GNU C++:
+			(Note: You have to make sure that you are using the correct
+				   version of g++ in your path reference)
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include\c++
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include\c++\i686-pc-cygwin
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include\c++\backward
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include
+			C:\Cygwin\lib\gcc\i686-pc-cygwin\4.7.3\include-fixed
+			C:\Cygwin\usr\include
+			C:\Cygwin\usr\include\w32api
+
++------------------------------------------------------------------------------+
+|                    Building in Eclipse                                       |
++------------------------------------------------------------------------------+
+[1] Right-click on the project and select "Invoke Autotools->Invoke autoreconf"
+[2] Enter the arguments "--verbose --install --force"
+[3] Right-click on the project and select "Build Project"
+
+You should now see a newly created executable with the proper extension for your
+system in the /src directory named bijoux.xlserver
+
+You can now run and/or debug your application using the Eclipse Run/Debug menu
+ 
++------------------------------------------------------------------------------+
+|                    Using Command Line (Cygwin & Linux)                       |
++------------------------------------------------------------------------------+
+[1] Run 'autoreconf --verbose --install --force' in the root directory.  This will
+    result in a lot of new files being created, I have conveniently added these
+    files into the .gitignore file so that they do not get added into source
+    control.
+[2] Run './configure --prefix=<desired path>'
+[3] Run 'make && make install'
+
+
