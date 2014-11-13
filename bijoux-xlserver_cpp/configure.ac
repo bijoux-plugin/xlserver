@@ -37,7 +37,8 @@ AC_CONFIG_FILES(Makefile src/Makefile)
 
 dnl Boost Libraries
 dnl Threading, Unit Test Framework
-AX_BOOST_BASE([1.49],,[AC_MSG_ERROR([bijoux.XlXserver needs Boost 1.49 or above.  It was not found in your system])])
+dnl Using v1.49 to support Debian
+AX_BOOST_BASE([1.49],,AC_MSG_ERROR([Install Boost v1.49 'apt-get install libboost-all-dev' on Debian]))
 AX_BOOST_SYSTEM
 AX_BOOST_THREAD
 AX_BOOST_UNIT_TEST_FRAMEWORK
